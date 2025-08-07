@@ -1,12 +1,8 @@
 package org.codiguin.webservicesspringbootjpahibernate.config;
 
-import org.codiguin.webservicesspringbootjpahibernate.entities.Category;
-import org.codiguin.webservicesspringbootjpahibernate.entities.Order;
-import org.codiguin.webservicesspringbootjpahibernate.entities.User;
+import org.codiguin.webservicesspringbootjpahibernate.entities.*;
 import org.codiguin.webservicesspringbootjpahibernate.entities.enums.OrderStatus;
-import org.codiguin.webservicesspringbootjpahibernate.repositories.CategoryRepository;
-import org.codiguin.webservicesspringbootjpahibernate.repositories.OrderRepository;
-import org.codiguin.webservicesspringbootjpahibernate.repositories.UserRepository;
+import org.codiguin.webservicesspringbootjpahibernate.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +24,12 @@ public class TestConfig implements CommandLineRunner {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -42,8 +44,34 @@ public class TestConfig implements CommandLineRunner {
         Category cat2 = new Category(null, "Books");
         Category cat3 = new Category(null, "Computers");
 
+        Product p1 = new Product(null, "The Brothers Karamazov", "A profound philosophical novel by Dostoevsky exploring faith, doubt, and redemption.", 90.5, "");
+        Product p2 = new Product(null, "Smart TV 4K Ultra HD", "Immersive viewing experience with HDR technology and built-in streaming apps.", 2190.0, "");
+        Product p3 = new Product(null, "MacBook Pro M2", "Next-generation performance with Apple M2 chip and long-lasting battery.", 1250.0, "");
+        Product p4 = new Product(null, "PC Gamer RTX 4070", "High-performance gaming rig with next-gen graphics for 4K gaming.", 1200.0, "");
+        Product p5 = new Product(null, "Crime and Punishment", "Dostoevsky's classic exploring the psychological depths of guilt and morality.", 100.99, "");
+
+
         userRepository.saveAll(Arrays.asList(u1, u2));
         orderRepository.saveAll(Arrays.asList(o1, o2, o3));
-        categoryRepository.saveAll(Arrays.asList(cat1,cat2,cat3));
+        categoryRepository.saveAll(Arrays.asList(cat1, cat2, cat3));
+        productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
+
+        p1.getCategories().add(cat2);
+        p2.getCategories().add(cat1);
+        p2.getCategories().add(cat3);
+        p3.getCategories().add(cat3);
+        p4.getCategories().add(cat3);
+        p5.getCategories().add(cat2);
+
+        productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
+
+        OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
+        OrderItem oi2 = new OrderItem(o1, p3, 1, p3.getPrice());
+        OrderItem oi3 = new OrderItem(o2, p3, 2, p3.getPrice());
+        OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice());
+
+        orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3, oi4));
+
+
     }
 }
